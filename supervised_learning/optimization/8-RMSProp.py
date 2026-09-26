@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-""" Training with momentum
+""" Training with RMSProp
 """
 
 import tensorflow as tf
