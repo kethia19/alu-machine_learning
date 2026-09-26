@@ -18,8 +18,8 @@ class BayesianOptimization:
         Class constructor
         Args:
             f: black-box function to be optimized
-            X_init: np.ndarray - (t, 1) - inputs already sampled with the
-                black-box function
+            X_init: np.ndarray - (t, 1) - inputs already sampled with
+                the black-box function
             Y_init: np.ndarray - (t, 1) - outputs of the black-box function
                 for each input in X_init
             bounds: tuple (min, max) - bounds of the space in which to look
@@ -75,13 +75,18 @@ class BayesianOptimization:
         for i in range(iterations):
             X_next, _ = self.acquisition()
 
-            if X_next in self.gp.X:
+            if np.any(np.all(X_next == self.gp.X, axis=1)):
                 break
 
             Y = self.f(X_next)
             self.gp.update(X_next, Y)
 
-        idx = np.argmin(self.gp.Y)
+        if self.minimize:
+            idx = np.argmin(self.gp.Y)
+        else:
+            idx = np.argmax(self.gp.Y)
+
         X_opt = self.gp.X[idx]
         Y_opt = np.array(self.gp.Y[idx])
+
         return X_opt, Y_opt
